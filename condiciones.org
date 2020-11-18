@@ -1,0 +1,28 @@
+* Condiciones
+  Deberán implementar, en forma individual y usando Java, una aplicación para realizar operaciones matemáticas
+  utilizando componentes. La aplicación, llamada “CalculadoraSimple”, permitirá 
+  ingresar dos enteros, 
+  seleccionar una operación matemática y obtener el resultado. 
+  
+  Las operaciones matemáticas que brinde la aplicación serán implementadas mediante componentes (plugins), 
+  cada plugin será una operación (suma, resta, multiplicación, etc). 
+  
+  La aplicación deberá tener una lista desplegable de donde seleccionar la operación matemática a ejecutar, 
+  además debe ser posible poder agregar operaciones (agregar plugins) durante la ejecución de la aplicación. 
+  Si lo consideran necesario, pueden agregar un botón “Actualizar” para que vuelva a analizar los plugins instalados. 
+  La aplicación buscará los plugins en una carpeta específica, en una ubicación relativa a la ubicación del ejecutable.
+
+  Es condición para aprobar implementar cuatro plugins, uno para cada una de las siguientes operaciones matemáticas:
+
+  + Suma
+  + Resta
+  + División
+  + Potencia
+
+  Están invitados a implementar todos los plugins extras que consideren. 
+
+  El entregable de este proyecto debe ser un archivo comprimido cuyo nombre será su número de libreta y el contenido será
+  una carpeta denominada Promocion. Dentro de la carpeta deberán tener una carpeta src con todo el código fuente,
+  una carpeta bin con el ejecutable y otra carpeta plugs con todos los plugins implementados.
+  Dentro de bin estará la carpeta donde se buscarán los plugins, pero sin ellos.
+  De ser necesario en una carpeta doc pueden colocar las decisiones de diseño.

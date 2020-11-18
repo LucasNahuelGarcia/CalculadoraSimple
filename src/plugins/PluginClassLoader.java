@@ -1,5 +1,5 @@
 package plugins;
 
-public class PluginClassLoader {
+public class PluginClassLoader extends ClassLoader {
 
 }

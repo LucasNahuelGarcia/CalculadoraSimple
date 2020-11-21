@@ -10,25 +10,26 @@ import javax.swing.text.NumberFormatter;
 
 public class Frame {
 	private JFrame ventana;
-	
+
 	private JPanel panelOperandos;
 	private JPanel panelHerramientas;
-	
+
 	private JLabel screenCalculadora;
 	private JButton botonResolver;
-	private JComboBox<JLabel> comboBoxOperaciones;
-	
+	private JComboBox<Object> comboBoxOperaciones;
+
 	private List<JFormattedTextField> textFieldOperandos;
 	private NumberFormatter numFormat;
-	private int cantidadArgumentos;
+
+	private List<String> nombreOperaciones;
 
 	public Frame() {
 		numFormat = new NumberFormatter(NumberFormat.getIntegerInstance());
 		numFormat.setMinimum(0l);
 		numFormat.setAllowsInvalid(false);
 
+		nombreOperaciones = new ArrayList<>();
 		textFieldOperandos = new ArrayList<>();
-		cantidadArgumentos = 6;
 	}
 
 	public void open(String titulo) {
@@ -46,32 +47,35 @@ public class Frame {
 
 		panelHerramientas = new JPanel(new GridLayout());
 		ventana.add(panelHerramientas, BorderLayout.NORTH);
-		
+
 		comboBoxOperaciones = new JComboBox<>();
 		comboBoxOperaciones.setToolTipText("Seleccionar operacion");
 		panelHerramientas.add(comboBoxOperaciones);
-		
+
 		botonResolver = new JButton("Aplicar Operación");
 		panelHerramientas.add(botonResolver);
-		
-		setArgumentosTextBox();
+
+		setCantidadArgumentos(3);
 
 		ventana.pack();
 		ventana.setVisible(true);
 	}
 
-	/**
-	 * Configura las cajas de texto donde se escribe el valor de los operandos
-	 */
-	private void setArgumentosTextBox() {
-		JFormattedTextField nuevoTF;
+	public void setOperaciones(List<String> operaciones) {
+		Iterator<String> it = operaciones.iterator();
 
-		for (int i = 0; i < cantidadArgumentos; i++) {
-			nuevoTF = new JFormattedTextField(numFormat);
-			nuevoTF.setText("" + i);
-			textFieldOperandos.add(nuevoTF);
-			panelOperandos.add(nuevoTF);
-		}
+		nombreOperaciones = operaciones;
+		comboBoxOperaciones.removeAllItems();
+		while (it.hasNext())
+			comboBoxOperaciones.addItem(makeObj(it.next()));
+	}
+
+	private Object makeObj(final String item) {
+		return new Object() {
+			public String toString() {
+				return item;
+			}
+		};
 	}
 
 	/**
@@ -81,7 +85,15 @@ public class Frame {
 	 * @return valor del argumento en la posicion index.
 	 */
 	public int getArgumentoAt(int index) {
-		return Integer.parseInt(textFieldOperandos.get(index).getText());
+		int argumento;
+
+		try {
+			argumento = Integer.parseInt(textFieldOperandos.get(index).getText());
+		} catch (NumberFormatException e) {
+			argumento = 0;
+		}
+
+		return argumento;
 	}
 
 	/**
@@ -92,13 +104,18 @@ public class Frame {
 	public int getCantidadArgumentos() {
 		return textFieldOperandos.size();
 	}
-	
-	public void setCantidadArgumentos() {
+
+	/**
+	 * Establece la cantidad de inputs que se muestran en pantalla.
+	 * 
+	 * @param num cantidad de inputs que se va a mostrar.
+	 */
+	public void setCantidadArgumentos(int num) {
 		JFormattedTextField nuevoTF;
 
-		for (int i = 0; i < cantidadArgumentos; i++) {
+		for (int i = 0; i < num; i++) {
 			nuevoTF = new JFormattedTextField(numFormat);
-			nuevoTF.setText("" + i);
+			nuevoTF.setText("" + 0);
 			textFieldOperandos.add(nuevoTF);
 			panelOperandos.add(nuevoTF);
 		}

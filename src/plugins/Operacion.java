@@ -1,4 +1,4 @@
-package logica;
+package plugins;
 
 public interface Operacion {
 	public String getName();

@@ -53,19 +53,27 @@ public class PluginLoader {
 	private void cargarPluginsEnCarpeta(File pluginFolder) {
 		pathDeClases = new ArrayList<>();
 		nombreClases = new ArrayList<>();
+		JarFile jarFile;
 
 		File[] plugins = pluginFolder.listFiles((dir, name) -> name.endsWith(".jar"));
-		System.out.println("Cargando clases de carpeta");
-		System.out.println(pluginFolder.getAbsolutePath());
-		System.out.println("null:" + (plugins != null) + pluginFolder.length());
 
 		if (plugins != null)
-			for (File file : plugins)
-				cargarPluginsDeJar(file);
+			for (File file : plugins) {
+				try {
+					jarFile = new JarFile(file);
+					cargarPluginsDeJar(jarFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 	}
 
-	private void cargarPluginsDeJar(File file) {
-		JarFile jarFile = null;
+	/**
+	 * Busca plugins validos dentro de un archivo jar y los carga en la estructura.
+	 * 
+	 * @param file Archivo donde buscar plugins.
+	 */
+	private void cargarPluginsDeJar(JarFile jarFile) {
 		Iterator<JarEntry> jarEntryIterator;
 		JarEntry jarEntry;
 		Class posiblePlugin;
@@ -73,7 +81,6 @@ public class PluginLoader {
 
 		try {
 			System.out.println("Cargando clases de jar");
-			jarFile = new JarFile(file);
 
 			jarEntryIterator = jarFile.stream().iterator();
 
@@ -81,15 +88,13 @@ public class PluginLoader {
 				jarEntry = jarEntryIterator.next();
 				if (jarEntry.getName().endsWith(".class")) {
 					nombreClase = getClassNameDeJarEntry(jarEntry);
-					
+
 					posiblePlugin = Class.forName(nombreClase);
 
 					if (esPluginOperacion(posiblePlugin))
 						operaciones.add((Operacion) posiblePlugin.getDeclaredConstructor().newInstance());
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

@@ -1,14 +1,16 @@
 package gui;
 
 import java.awt.*;
-import java.text.NumberFormat;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 
 import logica.Logica;
+import plugins.Operacion;
 
 public class Frame {
 	private Logica logica;
@@ -23,16 +25,11 @@ public class Frame {
 	private JComboBox<Object> comboBoxOperaciones;
 
 	private List<JFormattedTextField> textFieldOperandos;
-	private NumberFormatter numFormat;
-
-	private List<String> nombreOperaciones;
+	private DecimalFormat numFormat;
 
 	public Frame() {
-		numFormat = new NumberFormatter(NumberFormat.getIntegerInstance());
-		numFormat.setMinimum(0l);
-		numFormat.setAllowsInvalid(false);
+		numFormat = new DecimalFormat();
 
-		nombreOperaciones = new ArrayList<>();
 		textFieldOperandos = new ArrayList<>();
 	}
 
@@ -60,20 +57,41 @@ public class Frame {
 
 		botonResolver = new JButton("Aplicar Operación");
 		panelHerramientas.add(botonResolver);
+		botonResolver.addActionListener(new ActionListener() {
 
-		setCantidadArgumentos(3);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				double[] operandos = new double[textFieldOperandos.size()];
+				String valorOperando;
+				double resultado;
+
+				for (int i = 0; i < textFieldOperandos.size(); i++) {
+					valorOperando = textFieldOperandos.get(i).getText();
+					valorOperando = valorOperando.replace(",", "");
+					operandos[i] = Double.parseDouble(valorOperando);
+				}
+
+				resultado = logica.operar(operandos);
+
+				screenCalculadora.setText("" + resultado);
+			}
+		});
+
+		setCantidadArgumentos(logica.getOperacionActual().getCantidadOperandos());
 
 		ventana.pack();
 		ventana.setVisible(true);
+
+		updateOperaciones();
 	}
 
-	public void setOperaciones(List<String> operaciones) {
-		Iterator<String> it = operaciones.iterator();
+	public void updateOperaciones() {
+		Iterator<Operacion> it = logica.getOperaciones().iterator();
 
-		nombreOperaciones = operaciones;
 		comboBoxOperaciones.removeAllItems();
+
 		while (it.hasNext())
-			comboBoxOperaciones.addItem(makeObj(it.next()));
+			comboBoxOperaciones.addItem(makeObj(it.next().getName()));
 	}
 
 	private Object makeObj(final String item) {
@@ -82,33 +100,6 @@ public class Frame {
 				return item;
 			}
 		};
-	}
-
-	/**
-	 * Devuelve el argumento en un indice dado.
-	 * 
-	 * @param index indice del argumento.
-	 * @return valor del argumento en la posicion index.
-	 */
-	public int getArgumentoAt(int index) {
-		int argumento;
-
-		try {
-			argumento = Integer.parseInt(textFieldOperandos.get(index).getText());
-		} catch (NumberFormatException e) {
-			argumento = 0;
-		}
-
-		return argumento;
-	}
-
-	/**
-	 * Devuelve la cantidad de argumentos que muestra actualmente la GUI.
-	 * 
-	 * @return cantidad de argumentos mostrados.
-	 */
-	public int getCantidadArgumentos() {
-		return textFieldOperandos.size();
 	}
 
 	/**

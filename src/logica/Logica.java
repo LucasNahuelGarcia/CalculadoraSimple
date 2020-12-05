@@ -7,7 +7,6 @@ public class Logica {
 	private final static String PLUGIN_PATH_DEFAULT = "plugins";
 	private PluginLoader pluginLoader;
 	private String pluginPath;
-	private List<Operacion> operaciones;
 	private Operacion operacionActual;
 
 	public Logica() {
@@ -19,6 +18,18 @@ public class Logica {
 			operacionActual = pluginLoader.getOperaciones().get(0);
 
 		System.out.println("Se cargaron " + pluginLoader.getOperaciones().size() + " plugins.");
+	}
+
+	public double operar(double[] operandos) {
+		return operacionActual.operar(operandos);
+	}
+
+	public List<Operacion> getOperaciones() {
+		return pluginLoader.getOperaciones();
+	}
+
+	public Operacion getOperacionActual() {
+		return operacionActual;
 	}
 
 	public void setPluginPath(String pluginPath) {

@@ -8,7 +8,11 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 
+import logica.Logica;
+
 public class Frame {
+	private Logica logica;
+
 	private JFrame ventana;
 
 	private JPanel panelOperandos;
@@ -32,7 +36,9 @@ public class Frame {
 		textFieldOperandos = new ArrayList<>();
 	}
 
-	public void open(String titulo) {
+	public void open(String titulo, Logica logica) {
+		this.logica = logica;
+
 		ventana = new JFrame(titulo);
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ventana.setLayout(new BorderLayout());

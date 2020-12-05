@@ -6,93 +6,128 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
+/**
+ * Modela una estructura que carga los plugins de un directorio.
+ */
 public class PluginLoader {
 	List<URL> pathDeClases;
-	List<String> clases;
+	List<String> nombreClases;
 	List<Operacion> operaciones;
 
+	/**
+	 * Crea una nueva instancia de PluginLoader
+	 */
 	public PluginLoader() {
 		operaciones = new ArrayList<>();
 	}
 
+	/**
+	 * Si la carpeta plugins existe, busca plugins dentro de esta. Si no existe la
+	 * crea.
+	 * 
+	 * @param path ubicación donde se deben buscar los plugins.
+	 */
 	public void buscarPlugins(String path) {
 		File pluginFolder = new File(path);
 
-		if (pluginFolder.exists()) {
-			cargarPlugins(pluginFolder);
-		} else
+		if (pluginFolder.exists())
+			cargarPluginsEnCarpeta(pluginFolder);
+		else
 			pluginFolder.mkdir();
 	}
 
+	/**
+	 * Retorna una lista con todas las operaciones cargadas en la estructura.
+	 * 
+	 * @return Lista con las operaciones cargadas.
+	 */
 	public List<Operacion> getOperaciones() {
 		return operaciones;
 	}
 
-	public List<String> pluginToString() {
-		List<String> nombreOperacion = new ArrayList<>();
-		Iterator<Operacion> it = operaciones.iterator();
-		while (it.hasNext()) {
-			nombreOperacion.add(it.next().getName());
-			System.out.println("nombre: " + it.next());
-		}
-		return nombreOperacion;
-	}
-
-	private void cargarPlugins(File pluginFolder) {
+	/**
+	 * Carga los plugins dentro de una carpeta.
+	 * 
+	 * @param pluginFolder Carpeta en donde buscar plugins.
+	 */
+	private void cargarPluginsEnCarpeta(File pluginFolder) {
 		pathDeClases = new ArrayList<>();
-		clases = new ArrayList<>();
+		nombreClases = new ArrayList<>();
+
 		File[] plugins = pluginFolder.listFiles((dir, name) -> name.endsWith(".jar"));
+		System.out.println("Cargando clases de carpeta");
+		System.out.println(pluginFolder.getAbsolutePath());
+		System.out.println("null:" + (plugins != null) + pluginFolder.length());
 
-		if (plugins != null) {
-
-			cargarClases(plugins);
-
-			URLClassLoader urlClassLoader = new URLClassLoader(pathDeClases.toArray(new URL[pathDeClases.size()]));
-			for(String className : clases) {
-				try {
-					Class cls = urlClassLoader.loadClass(className.replaceAll("/", ".").replace(".class", ""));
-
-					Class[] interfaces = cls.getInterfaces();
-					for (Class intface : interfaces) {
-						System.out.println(intface.getName());
-						if (intface.equals(Operacion.class)) {
-							Operacion plugin = (Operacion) cls.getDeclaredConstructor().newInstance();
-							System.out.println("added plugin: " + cls.getName());
-							operaciones.add(plugin);
-						}
-					}
-				} catch (NoClassDefFoundError | ClassNotFoundException | InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-						| SecurityException | ClassCastException e) {
-					System.out.println(className + " no era una clase valida");
-				}
-			}
-
-		}
+		if (plugins != null)
+			for (File file : plugins)
+				cargarPluginsDeJar(file);
 	}
 
-	private void cargarClases(File[] archivos) {
-		for (File file : archivos)
-			agregarClasesDeJar(file);
-	}
+	private void cargarPluginsDeJar(File file) {
+		JarFile jarFile = null;
+		Iterator<JarEntry> jarEntryIterator;
+		JarEntry jarEntry;
+		Class posiblePlugin;
+		String nombreClase;
 
-	private void agregarClasesDeJar(File file) {
-		JarFile jarFile;
 		try {
+			System.out.println("Cargando clases de jar");
 			jarFile = new JarFile(file);
 
-			jarFile.stream().forEach(jarEntry -> {
+			jarEntryIterator = jarFile.stream().iterator();
+
+			while (jarEntryIterator.hasNext()) {
+				jarEntry = jarEntryIterator.next();
 				if (jarEntry.getName().endsWith(".class")) {
-					clases.add(jarEntry.getName());
-					System.out.println(jarEntry.getName());
+					nombreClase = getClassNameDeJarEntry(jarEntry);
+					
+					posiblePlugin = Class.forName(nombreClase);
+
+					if (esPluginOperacion(posiblePlugin))
+						operaciones.add((Operacion) posiblePlugin.getDeclaredConstructor().newInstance());
 				}
-			});
-
-			jarFile.close();
-
-			pathDeClases.add(file.toURI().toURL());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
+	}
+
+	private String getClassNameDeJarEntry(JarEntry jarEntry) {
+		String classname = jarEntry.getName();
+		classname = classname.replace('/', '.');
+		classname = classname.substring(0, jarEntry.getName().length() - 6);
+
+		return classname;
+	}
+
+	/**
+	 * Dada una clase, verifica si es una operación plugin valida.
+	 * 
+	 * @param clase La clase que se quiere verificar.
+	 * @return True si es plugin valido, false si no.
+	 */
+	private boolean esPluginOperacion(Class clase) {
+		boolean esOperacion = false;
+		Class[] interfaces = clase.getInterfaces();
+
+		for (int i = 0; i < interfaces.length && !esOperacion; i++)
+			interfaces[i].equals(Operacion.class);
+
+		return true;
 	}
 }

@@ -1,6 +1,7 @@
 package logica;
 
 import java.util.*;
+
 import plugins.*;
 
 public class Logica {
@@ -32,6 +33,10 @@ public class Logica {
 		return operacionActual;
 	}
 
+	public void setOperacionActual(Operacion op) {
+		operacionActual = op;
+	}
+
 	public void setPluginPath(String pluginPath) {
 		this.pluginPath = pluginPath;
 	}
@@ -39,5 +44,4 @@ public class Logica {
 	public void updatePlugins() {
 		pluginLoader.buscarPlugins(pluginPath);
 	}
-
 }

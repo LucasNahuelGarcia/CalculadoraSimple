@@ -22,7 +22,7 @@ public class Frame {
 
 	private JLabel screenCalculadora;
 	private JButton botonResolver;
-	private JComboBox<Object> comboBoxOperaciones;
+	private JComboBox<Operacion> comboBoxOperaciones;
 
 	private List<JFormattedTextField> textFieldOperandos;
 	private DecimalFormat numFormat;
@@ -77,6 +77,18 @@ public class Frame {
 			}
 		});
 
+		comboBoxOperaciones.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				try {
+					logica.setOperacionActual((Operacion) comboBoxOperaciones.getSelectedItem());
+				} catch (ClassCastException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		setCantidadArgumentos(logica.getOperacionActual().getCantidadOperandos());
 
 		ventana.pack();
@@ -91,15 +103,7 @@ public class Frame {
 		comboBoxOperaciones.removeAllItems();
 
 		while (it.hasNext())
-			comboBoxOperaciones.addItem(makeObj(it.next().getName()));
-	}
-
-	private Object makeObj(final String item) {
-		return new Object() {
-			public String toString() {
-				return item;
-			}
-		};
+			comboBoxOperaciones.addItem(it.next());
 	}
 
 	/**

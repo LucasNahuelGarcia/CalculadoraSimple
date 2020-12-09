@@ -2,8 +2,8 @@ package ejPlugin;
 
 import plugins.Operacion;
 
-public class Suma implements Operacion {
-	private static final String nombre = "Suma";
+public class Multiplicacion implements Operacion {
+	private static final String nombre = "Multiplicacion";
 
 	@Override
 	public String toString() {
@@ -17,7 +17,7 @@ public class Suma implements Operacion {
 
 	@Override
 	public double operar(double[] operandos) {
-		return operandos[0] + operandos[1];
+		return operandos[0] * operandos[1];
 	}
 
 }

@@ -1,5 +1,6 @@
 package ejPlugin;
 
+import plugins.InvalidOperationException;
 import plugins.Operacion;
 
 public class Multiplicacion implements Operacion {
@@ -16,7 +17,7 @@ public class Multiplicacion implements Operacion {
 	}
 
 	@Override
-	public double operar(double[] operandos) {
+	public double operar(double[] operandos) throws InvalidOperationException{
 		return operandos[0] * operandos[1];
 	}
 

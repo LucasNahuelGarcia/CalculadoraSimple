@@ -3,8 +3,8 @@ package ejPlugin;
 import plugins.InvalidOperationException;
 import plugins.Operacion;
 
-public class Suma implements Operacion {
-	private static final String nombre = "Suma";
+public class Division implements Operacion {
+	private static final String nombre = "Division";
 
 	@Override
 	public String toString() {
@@ -18,7 +18,13 @@ public class Suma implements Operacion {
 
 	@Override
 	public double operar(double[] operandos) throws InvalidOperationException {
-		return operandos[0] + operandos[1];
+		double res;
+		if (operandos[1] != 0)
+			res = operandos[0] / operandos[1];
+		else
+			throw new InvalidOperationException("Se intentó dividir por cero.");
+
+		return operandos[0] / operandos[1];
 	}
 
 }

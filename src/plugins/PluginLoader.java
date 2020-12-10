@@ -28,6 +28,7 @@ public class PluginLoader {
 	 * @param path ubicación donde se deben buscar los plugins.
 	 */
 	public void buscarPlugins(String path) {
+		operaciones = new ArrayList<>();
 		File pluginFolder = new File(path);
 
 		if (pluginFolder.exists())
@@ -80,8 +81,6 @@ public class PluginLoader {
 		String nombreClase;
 
 		try {
-			System.out.println("Cargando clases de jar");
-
 			jarEntryIterator = jarFile.stream().iterator();
 
 			while (jarEntryIterator.hasNext()) {

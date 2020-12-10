@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -50,7 +50,8 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="emoji" />
+     inkscape:current-layer="line"
+     inkscape:document-rotation="0" />
   <g
      id="color"
      transform="matrix(0.4302926,0,0,0.4302926,0.5094664,0.5094664)">
@@ -66,34 +67,27 @@
   <g
      id="line"
      transform="matrix(0.4302926,0,0,0.4302926,0.5094664,0.5094664)">
-    <circle
-       cx="36"
-       cy="36"
-       r="26.68"
-       fill="none"
-       stroke="#000000"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       stroke-width="4.74"
-       paint-order="normal"
-       id="circle5" />
-    <path
-       fill="none"
-       stroke="#000000"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       stroke-width="8.031"
-       d="M 28.03,42.18 H 43.98"
-       clip-rule="evenodd"
-       id="path7" />
-    <path
-       fill="none"
-       stroke="#000000"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       stroke-width="8.031"
-       d="M 28.03,29.82 H 43.98"
-       clip-rule="evenodd"
-       id="path9" />
+    <g
+       id="g837"
+       transform="matrix(2.4227513,0,0,2.4227513,-51.231161,-51.219047)">
+      <path
+         fill="none"
+         stroke="#000000"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-width="8.031"
+         d="M 28.03,42.18 H 43.98"
+         clip-rule="evenodd"
+         id="path7" />
+      <path
+         fill="none"
+         stroke="#000000"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-width="8.031"
+         d="M 28.03,29.82 H 43.98"
+         clip-rule="evenodd"
+         id="path9" />
+    </g>
   </g>
 </svg>

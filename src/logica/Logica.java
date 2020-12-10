@@ -13,12 +13,8 @@ public class Logica {
 	public Logica() {
 		pluginPath = PLUGIN_PATH_DEFAULT;
 		pluginLoader = new PluginLoader();
-		pluginLoader.buscarPlugins(pluginPath);
 
-		if (!pluginLoader.getOperaciones().isEmpty())
-			operacionActual = pluginLoader.getOperaciones().get(0);
-
-		System.out.println("Se cargaron " + pluginLoader.getOperaciones().size() + " plugins.");
+		updatePlugins();
 	}
 
 	public double operar(double[] operandos) throws InvalidOperationException {
@@ -43,5 +39,10 @@ public class Logica {
 
 	public void updatePlugins() {
 		pluginLoader.buscarPlugins(pluginPath);
+
+		if (!pluginLoader.getOperaciones().isEmpty())
+			operacionActual = pluginLoader.getOperaciones().get(0);
+
+		System.out.println("Se cargaron " + pluginLoader.getOperaciones().size() + " plugins.");
 	}
 }

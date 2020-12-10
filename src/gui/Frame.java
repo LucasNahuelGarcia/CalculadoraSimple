@@ -26,6 +26,8 @@ public class Frame {
 	private JButton botonActualizarPlugins;
 	private JComboBox<Operacion> comboBoxOperaciones;
 
+	private ActionListener comboBoxActionListener;
+
 	private List<JFormattedTextField> textFieldOperandos;
 	private DecimalFormat numFormat;
 
@@ -60,6 +62,14 @@ public class Frame {
 		botonActualizarPlugins.setToolTipText("Buscar Plugins");
 		panelHerramientas.add(botonActualizarPlugins);
 
+		botonActualizarPlugins.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updatePlugins();
+			}
+		});
+
 		botonResolver = new JButton(iconProvider.getResolverIcon());
 		botonResolver.setToolTipText("Aplicar Operación");
 		panelHerramientas.add(botonResolver);
@@ -67,53 +77,82 @@ public class Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent act) {
-				double[] operandos = new double[textFieldOperandos.size()];
-				String valorOperando;
-				String resultado;
-
-				for (int i = 0; i < textFieldOperandos.size(); i++) {
-					valorOperando = textFieldOperandos.get(i).getText();
-					valorOperando = valorOperando.replace(",", "");
-					operandos[i] = Double.parseDouble(valorOperando);
-				}
-
-				try {
-					resultado = "" + logica.operar(operandos);
-				} catch (InvalidOperationException err) {
-					resultado = "ERROR";
-				}
-
-				screenCalculadora.setText(resultado);
+				resolverOperacion();
 			}
+
 		});
 
-		comboBoxOperaciones.addActionListener(new ActionListener() {
-
+		comboBoxActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ev) {
 				try {
 					logica.setOperacionActual((Operacion) comboBoxOperaciones.getSelectedItem());
+					setCantidadArgumentos(logica.getOperacionActual().getCantidadOperandos());
 				} catch (ClassCastException e) {
 					e.printStackTrace();
 				}
 			}
-		});
+		};
+		comboBoxOperaciones.addActionListener(comboBoxActionListener);
 
 		setCantidadArgumentos(logica.getOperacionActual().getCantidadOperandos());
 
 		ventana.pack();
-		ventana.setVisible(true);
 
+		updateOperaciones();
+		
+		ventana.setVisible(true);
+	}
+
+	/**
+	 * Llama la operación de actualizar plugins de lógica y luego actualiza los de
+	 * la GUI.
+	 */
+	private void updatePlugins() {
+		logica.updatePlugins();
 		updateOperaciones();
 	}
 
-	public void updateOperaciones() {
+	/**
+	 * Obtiene el resultado de la operación descrita.
+	 * 
+	 */
+	private void resolverOperacion() {
+		double[] operandos = new double[textFieldOperandos.size()];
+		String valorOperando;
+		String resultado;
+
+		for (int i = 0; i < textFieldOperandos.size(); i++) {
+			valorOperando = textFieldOperandos.get(i).getText();
+			valorOperando = valorOperando.replace(",", "");
+			operandos[i] = Double.parseDouble(valorOperando);
+		}
+
+		try {
+			resultado = "" + logica.operar(operandos);
+		} catch (InvalidOperationException err) {
+			resultado = "ERROR";
+		}
+
+		screenCalculadora.setText(resultado);
+	}
+
+	/**
+	 * Actualiza las operaciones de la GUI con las almacenadas en logica.
+	 */
+	private void updateOperaciones() {
 		Iterator<Operacion> it = logica.getOperaciones().iterator();
 
-		comboBoxOperaciones.removeAllItems();
+		limpiarComboBox();
 
 		while (it.hasNext())
 			comboBoxOperaciones.addItem(it.next());
+	}
+
+	private void limpiarComboBox() {
+		comboBoxOperaciones.removeActionListener(comboBoxActionListener);
+		comboBoxOperaciones.removeAllItems();
+		comboBoxOperaciones.addActionListener(comboBoxActionListener);
 	}
 
 	/**
@@ -121,14 +160,20 @@ public class Frame {
 	 * 
 	 * @param num cantidad de inputs que se va a mostrar.
 	 */
-	public void setCantidadArgumentos(int num) {
+	private void setCantidadArgumentos(int num) {
 		JFormattedTextField nuevoTF;
-
+		System.out.println(num);
+		
+		panelOperandos.removeAll();
+		textFieldOperandos = new ArrayList<>();
+		
 		for (int i = 0; i < num; i++) {
 			nuevoTF = new JFormattedTextField(numFormat);
 			nuevoTF.setText("" + 0);
 			textFieldOperandos.add(nuevoTF);
 			panelOperandos.add(nuevoTF);
 		}
+		
+		panelOperandos.revalidate();
 	}
 }

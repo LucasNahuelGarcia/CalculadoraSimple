@@ -1,5 +1,8 @@
 package plugins;
 
+/**
+ * Modela una excepción que resulta de una operación inválida.
+ */
 public class InvalidOperationException extends Exception {
 
 	public InvalidOperationException() {
@@ -21,5 +24,4 @@ public class InvalidOperationException extends Exception {
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
-
 }

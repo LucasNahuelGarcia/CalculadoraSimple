@@ -111,6 +111,13 @@ public class PluginLoader {
 		}
 	}
 
+	/**
+	 * A partir de un JarEntry que contenga una clase, obtiene el nombre de la
+	 * clase.
+	 * 
+	 * @param jarEntry Entrada de archivo .jar
+	 * @return Nombre de la clase asociada al archivo.
+	 */
 	private String getClassNameDeJarEntry(JarEntry jarEntry) {
 		String classname = jarEntry.getName();
 		classname = classname.replace('/', '.');
@@ -130,8 +137,8 @@ public class PluginLoader {
 		Class[] interfaces = clase.getInterfaces();
 
 		for (int i = 0; i < interfaces.length && !esOperacion; i++)
-			interfaces[i].equals(Operacion.class);
+			esOperacion = interfaces[i].equals(Operacion.class);
 
-		return true;
+		return esOperacion;
 	}
 }

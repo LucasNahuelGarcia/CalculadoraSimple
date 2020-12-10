@@ -31,11 +31,21 @@ public class Frame {
 	private List<JFormattedTextField> textFieldOperandos;
 	private DecimalFormat numFormat;
 
+	/**
+	 * Crea un nuevo frame.
+	 */
 	public Frame() {
 		numFormat = new DecimalFormat();
 		textFieldOperandos = new ArrayList<>();
 	}
 
+	/**
+	 * Muestra en pantalla la gui de la calculadora.
+	 * 
+	 * @param titulo       Título de la ventana.
+	 * @param logica       Lógica de la calculadora
+	 * @param iconProvider El IconProvider que se va a usar.
+	 */
 	public void open(String titulo, Logica logica, IconProvider iconProvider) {
 		this.logica = logica;
 
@@ -100,7 +110,7 @@ public class Frame {
 		ventana.pack();
 
 		updateOperaciones();
-		
+
 		ventana.setVisible(true);
 	}
 
@@ -115,7 +125,6 @@ public class Frame {
 
 	/**
 	 * Obtiene el resultado de la operación descrita.
-	 * 
 	 */
 	private void resolverOperacion() {
 		double[] operandos = new double[textFieldOperandos.size()];
@@ -124,6 +133,9 @@ public class Frame {
 
 		for (int i = 0; i < textFieldOperandos.size(); i++) {
 			valorOperando = textFieldOperandos.get(i).getText();
+
+			// El formatter usa comas para denotar miles,
+			// para poder convertirlo a double hay que eliminarlas.
 			valorOperando = valorOperando.replace(",", "");
 			operandos[i] = Double.parseDouble(valorOperando);
 		}
@@ -149,7 +161,12 @@ public class Frame {
 			comboBoxOperaciones.addItem(it.next());
 	}
 
+	/**
+	 * Elimina todos los elementos dentro del combobox.
+	 */
 	private void limpiarComboBox() {
+		// Remover los items rompe el funcionamiento del actionListener
+		// por eso lo quitamos, eliminamos los items y lo agregames de vuelta.
 		comboBoxOperaciones.removeActionListener(comboBoxActionListener);
 		comboBoxOperaciones.removeAllItems();
 		comboBoxOperaciones.addActionListener(comboBoxActionListener);
@@ -163,17 +180,17 @@ public class Frame {
 	private void setCantidadArgumentos(int num) {
 		JFormattedTextField nuevoTF;
 		System.out.println(num);
-		
+
 		panelOperandos.removeAll();
 		textFieldOperandos = new ArrayList<>();
-		
+
 		for (int i = 0; i < num; i++) {
 			nuevoTF = new JFormattedTextField(numFormat);
 			nuevoTF.setText("" + 0);
 			textFieldOperandos.add(nuevoTF);
 			panelOperandos.add(nuevoTF);
 		}
-		
+
 		panelOperandos.revalidate();
 	}
 }

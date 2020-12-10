@@ -3,9 +3,9 @@ package ejPlugin;
 import plugins.InvalidOperationException;
 import plugins.Operacion;
 
-public class Suma implements Operacion {
+public class Potencia implements Operacion {
 	private static final int cantOperandos = 2;
-	private static final String nombre = "Suma";
+	private static final String nombre = "Potencia";
 
 	@Override
 	public String toString() {
@@ -21,8 +21,8 @@ public class Suma implements Operacion {
 	public double operar(double[] operandos) throws InvalidOperationException {
 		if (operandos.length < cantOperandos)
 			throw new InvalidOperationException("No hay suficientes operandos");
-		
-		return operandos[0] + operandos[1];
+
+		return Math.pow(operandos[0], operandos[1]);
 	}
 
 }

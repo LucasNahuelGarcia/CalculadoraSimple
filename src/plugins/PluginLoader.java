@@ -9,7 +9,7 @@ import java.util.jar.*;
 /**
  * Modela una estructura que carga los plugins de un directorio.
  */
-public class PluginLoader {
+public class PluginLoader extends ClassLoader {
 	List<URL> pathDeClases;
 	List<String> nombreClases;
 	List<Operacion> operaciones;

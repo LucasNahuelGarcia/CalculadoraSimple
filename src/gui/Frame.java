@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.*;
 
 import logica.Logica;
+import plugins.InvalidOperationException;
 import plugins.Operacion;
 
 public class Frame {
@@ -22,6 +23,7 @@ public class Frame {
 
 	private JLabel screenCalculadora;
 	private JButton botonResolver;
+	private JButton botonActualizarPlugins;
 	private JComboBox<Operacion> comboBoxOperaciones;
 
 	private List<JFormattedTextField> textFieldOperandos;
@@ -29,11 +31,10 @@ public class Frame {
 
 	public Frame() {
 		numFormat = new DecimalFormat();
-
 		textFieldOperandos = new ArrayList<>();
 	}
 
-	public void open(String titulo, Logica logica) {
+	public void open(String titulo, Logica logica, IconProvider iconProvider) {
 		this.logica = logica;
 
 		ventana = new JFrame(titulo);
@@ -55,15 +56,20 @@ public class Frame {
 		comboBoxOperaciones.setToolTipText("Seleccionar operacion");
 		panelHerramientas.add(comboBoxOperaciones);
 
-		botonResolver = new JButton("Aplicar Operación");
+		botonActualizarPlugins = new JButton(iconProvider.getActualizarPluginsIcon());
+		botonActualizarPlugins.setToolTipText("Buscar Plugins");
+		panelHerramientas.add(botonActualizarPlugins);
+
+		botonResolver = new JButton(iconProvider.getResolverIcon());
+		botonResolver.setToolTipText("Aplicar Operación");
 		panelHerramientas.add(botonResolver);
 		botonResolver.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent act) {
 				double[] operandos = new double[textFieldOperandos.size()];
 				String valorOperando;
-				double resultado;
+				String resultado;
 
 				for (int i = 0; i < textFieldOperandos.size(); i++) {
 					valorOperando = textFieldOperandos.get(i).getText();
@@ -71,9 +77,13 @@ public class Frame {
 					operandos[i] = Double.parseDouble(valorOperando);
 				}
 
-				resultado = logica.operar(operandos);
+				try {
+					resultado = "" + logica.operar(operandos);
+				} catch (InvalidOperationException err) {
+					resultado = "ERROR";
+				}
 
-				screenCalculadora.setText("" + resultado);
+				screenCalculadora.setText(resultado);
 			}
 		});
 

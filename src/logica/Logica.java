@@ -21,7 +21,7 @@ public class Logica {
 		System.out.println("Se cargaron " + pluginLoader.getOperaciones().size() + " plugins.");
 	}
 
-	public double operar(double[] operandos) {
+	public double operar(double[] operandos) throws InvalidOperationException {
 		return operacionActual.operar(operandos);
 	}
 
